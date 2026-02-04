@@ -343,6 +343,20 @@ export class TheKnotAdapter extends BaseSiteAdapter {
      * Click the "Go to next page" link and wait for new content to load.
      */
     try {
+      // CRITICAL: Dismiss OneTrust cookie consent popup if present
+      // This popup blocks clicks on pagination buttons
+      try {
+        const cookieAcceptButton = await page.$('#onetrust-accept-btn-handler, .onetrust-close-btn-handler, button[aria-label*="Accept"], button[aria-label*="Close"]');
+        if (cookieAcceptButton) {
+          console.log('[INFO] Dismissing cookie consent popup');
+          await cookieAcceptButton.click();
+          await page.waitForTimeout(500); // Wait for popup to close
+        }
+      } catch (cookieError) {
+        // Ignore cookie popup errors - it might not be present
+        console.log('[DEBUG] No cookie popup found or already dismissed');
+      }
+
       // Try multiple selectors for the next page button
       const selectors = [
         'a[aria-label="Go to next page"]',

@@ -130,6 +130,23 @@ export class JobWorker {
       throw error;
     }
 
+    // CRITICAL: Dismiss OneTrust cookie consent popup if present
+    // This popup blocks clicks on pagination buttons
+    try {
+      await this.log(job.id, 'info', 'Checking for cookie consent popup...');
+      const cookieAcceptButton = await page.$('#onetrust-accept-btn-handler, .onetrust-close-btn-handler, button[aria-label*="Accept"], button[aria-label*="Close"]');
+      if (cookieAcceptButton) {
+        await this.log(job.id, 'info', 'Dismissing cookie consent popup');
+        await cookieAcceptButton.click();
+        await page.waitForTimeout(1000); // Wait for popup to close
+      } else {
+        await this.log(job.id, 'info', 'No cookie popup found');
+      }
+    } catch (cookieError) {
+      // Ignore cookie popup errors - it might not be present
+      await this.log(job.id, 'debug', 'Cookie popup handling skipped');
+    }
+
     // STEP 1: Detect total number of pages BEFORE scraping
     const totalPagesAvailable = await adapter.getTotalPages(page);
     await this.log(job.id, 'info', `Total pages available: ${totalPagesAvailable}`);
