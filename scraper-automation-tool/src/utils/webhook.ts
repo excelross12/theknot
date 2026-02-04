@@ -10,6 +10,7 @@ interface WebhookPayload {
   site: string;
   timestamp: string;
   data?: {
+    count?: number;
     itemsExtracted?: number;
     pagesScraped?: number;
     durationMs?: number;
@@ -106,6 +107,7 @@ export function createCompletedPayload(
     site,
     timestamp: new Date().toISOString(),
     data: {
+      count: result.items.length, // Add count for easy looping
       itemsExtracted: result.itemsExtracted,
       pagesScraped: result.pagesScraped,
       durationMs: result.durationMs,
