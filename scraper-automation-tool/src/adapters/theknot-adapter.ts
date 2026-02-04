@@ -382,14 +382,14 @@ export class TheKnotAdapter extends BaseSiteAdapter {
       // Get current URL to verify navigation
       const currentUrl = page.url();
 
-      // Click the link
-      await nextLink.click();
-
-      // Wait for URL to change or venue cards to reload
-      await Promise.race([
-        page.waitForURL((url) => url.toString() !== currentUrl, { timeout: 15000 }),
-        page.waitForSelector('[data-testid="vendor-card-base"]', { timeout: 15000 })
+      // Click the link and wait for navigation
+      await Promise.all([
+        page.waitForLoadState('domcontentloaded', { timeout: 15000 }),
+        nextLink.click()
       ]);
+
+      // Wait for venue cards to reload
+      await page.waitForSelector('[data-testid="vendor-card-base"]', { timeout: 15000 });
 
       // Small delay to ensure content is stable
       await page.waitForTimeout(1000);
