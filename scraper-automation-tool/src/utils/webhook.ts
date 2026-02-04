@@ -14,7 +14,12 @@ interface WebhookPayload {
     pagesScraped?: number;
     durationMs?: number;
     resultFilePath?: string;
-    items?: any[]; // Include scraped data
+    name?: string[];
+    location?: string[];
+    rating?: (number | string)[];
+    reviews?: number[];
+    price?: string[];
+    url?: string[];
   };
   error?: {
     message: string;
@@ -78,6 +83,23 @@ export function createCompletedPayload(
     items: any[];
   }
 ): WebhookPayload {
+  // Transform items array into column arrays
+  const name: string[] = [];
+  const location: string[] = [];
+  const rating: (number | string)[] = [];
+  const reviews: number[] = [];
+  const price: string[] = [];
+  const url: string[] = [];
+
+  result.items.forEach((item) => {
+    name.push(item.name || '');
+    location.push(item.location || '');
+    rating.push(item.rating || 'New');
+    reviews.push(item.reviews || 0);
+    price.push(item.price || '');
+    url.push(item.url || '');
+  });
+
   return {
     jobId,
     status: 'completed',
@@ -88,7 +110,12 @@ export function createCompletedPayload(
       pagesScraped: result.pagesScraped,
       durationMs: result.durationMs,
       resultFilePath: result.resultFilePath,
-      items: result.items, // Include full scraped data
+      name,
+      location,
+      rating,
+      reviews,
+      price,
+      url,
     },
   };
 }
