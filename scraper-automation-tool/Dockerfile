@@ -4,14 +4,14 @@ FROM mcr.microsoft.com/playwright:v1.58.0-jammy
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy package files from the scraper-automation-tool subdirectory
+COPY scraper-automation-tool/package.json scraper-automation-tool/package-lock.json ./
 
 # Install dependencies (including TypeScript for build)
 RUN npm install
 
-# Copy source code
-COPY . .
+# Copy all source code from scraper-automation-tool subdirectory
+COPY scraper-automation-tool/ ./
 
 # Build TypeScript
 RUN npm run build
