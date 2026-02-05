@@ -23,6 +23,15 @@ interface WebhookPayload {
       price: string;
       url: string;
     }>;
+    columns?: {
+      count: number;
+      name: string[];
+      location: string[];
+      rating: (number | string)[];
+      reviews: number[];
+      price: string[];
+      url: string[];
+    };
   };
   error?: {
     message: string;
@@ -96,18 +105,35 @@ export function createCompletedPayload(
     url: item.url || '',
   }));
 
+  // Also provide column arrays for bulk operations
+  const columnData = {
+    count: result.items.length,
+    name: venues.map(v => v.name),
+    location: venues.map(v => v.location),
+    rating: venues.map(v => v.rating),
+    reviews: venues.map(v => v.reviews),
+    price: venues.map(v => v.price),
+    url: venues.map(v => v.url),
+  };
+
   return {
     jobId,
     status: 'completed',
     site,
     timestamp: new Date().toISOString(),
     data: {
+      // Summary info
       count: result.items.length,
       itemsExtracted: result.itemsExtracted,
       pagesScraped: result.pagesScraped,
       durationMs: result.durationMs,
       resultFilePath: result.resultFilePath,
+      
+      // Individual venue objects for easy looping
       venues,
+      
+      // Column arrays for bulk operations
+      columns: columnData,
     },
   };
 }
