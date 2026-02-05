@@ -1,14 +1,12 @@
 import { pool } from './index';
+import { memoryStore } from './memory-store';
 import type { Job } from '../types/database';
 
 export async function createJob(job: Omit<Job, 'created_at'>): Promise<Job> {
   if (!pool) {
-    // Return a mock job object when database is not configured
-    console.log('⚠️  Database not configured, job will not be persisted');
-    return {
-      ...job,
-      created_at: new Date(),
-    } as Job;
+    // Use in-memory store when database is not configured
+    console.log('⚠️  Using in-memory job store (no database)');
+    return memoryStore.createJob(job);
   }
   
   const result = await pool.query(
@@ -33,7 +31,7 @@ export async function createJob(job: Omit<Job, 'created_at'>): Promise<Job> {
 
 export async function getJob(id: string): Promise<Job | null> {
   if (!pool) {
-    return null;
+    return memoryStore.getJob(id);
   }
   
   const result = await pool.query('SELECT * FROM jobs WHERE id = $1', [id]);
@@ -46,6 +44,7 @@ export async function updateJobStatus(
   updates?: Partial<Job>
 ): Promise<void> {
   if (!pool) {
+    memoryStore.updateJob(id, { status, ...updates });
     return;
   }
   
@@ -71,7 +70,7 @@ export async function listJobs(filters?: {
   offset?: number;
 }): Promise<Job[]> {
   if (!pool) {
-    return [];
+    return memoryStore.listJobs(filters);
   }
   
   let query = 'SELECT * FROM jobs WHERE 1=1';
