@@ -10,7 +10,7 @@ async function checkJobs() {
     if (result.rows.length === 0) {
       console.log('No jobs found');
     } else {
-      result.rows.forEach((job, index) => {
+      result.rows.forEach((job: any, index: number) => {
         console.log(`\n${index + 1}. Job ID: ${job.id}`);
         console.log(`   Site: ${job.site}`);
         console.log(`   Status: ${job.status}`);

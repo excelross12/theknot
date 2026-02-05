@@ -21,7 +21,7 @@ if (usePostgres && pool) {
     console.log('✅ Connected to PostgreSQL');
   });
 
-  pool.on('error', (err) => {
+  pool.on('error', (err: Error) => {
     console.error('❌ Database error:', err);
     console.log('⚠️  Falling back to SQLite');
   });
