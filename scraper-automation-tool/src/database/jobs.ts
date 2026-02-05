@@ -3,7 +3,12 @@ import type { Job } from '../types/database';
 
 export async function createJob(job: Omit<Job, 'created_at'>): Promise<Job> {
   if (!pool) {
-    throw new Error('Database not configured');
+    // Return a mock job object when database is not configured
+    console.log('⚠️  Database not configured, job will not be persisted');
+    return {
+      ...job,
+      created_at: new Date(),
+    } as Job;
   }
   
   const result = await pool.query(
