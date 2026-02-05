@@ -2,6 +2,10 @@ import { pool } from './index';
 import type { Job } from '../types/database';
 
 export async function createJob(job: Omit<Job, 'created_at'>): Promise<Job> {
+  if (!pool) {
+    throw new Error('Database not configured');
+  }
+  
   const result = await pool.query(
     `INSERT INTO jobs (
       id, site, status, parameters, format, headless, webhook_url, job_type
@@ -23,6 +27,10 @@ export async function createJob(job: Omit<Job, 'created_at'>): Promise<Job> {
 }
 
 export async function getJob(id: string): Promise<Job | null> {
+  if (!pool) {
+    return null;
+  }
+  
   const result = await pool.query('SELECT * FROM jobs WHERE id = $1', [id]);
   return result.rows[0] || null;
 }
@@ -32,13 +40,17 @@ export async function updateJobStatus(
   status: Job['status'],
   updates?: Partial<Job>
 ): Promise<void> {
+  if (!pool) {
+    return;
+  }
+  
   const fields: string[] = ['status = $2'];
   const values: any[] = [id, status];
   let paramIndex = 3;
 
   if (updates) {
     Object.entries(updates).forEach(([key, value]) => {
-      fields.push(`${key} = $${paramIndex}`);
+      fields.push(`${key} = ${paramIndex}`);
       values.push(value);
       paramIndex++;
     });
@@ -53,18 +65,22 @@ export async function listJobs(filters?: {
   limit?: number;
   offset?: number;
 }): Promise<Job[]> {
+  if (!pool) {
+    return [];
+  }
+  
   let query = 'SELECT * FROM jobs WHERE 1=1';
   const params: any[] = [];
   let paramIndex = 1;
 
   if (filters?.site) {
-    query += ` AND site = $${paramIndex}`;
+    query += ` AND site = ${paramIndex}`;
     params.push(filters.site);
     paramIndex++;
   }
 
   if (filters?.status) {
-    query += ` AND status = $${paramIndex}`;
+    query += ` AND status = ${paramIndex}`;
     params.push(filters.status);
     paramIndex++;
   }
@@ -72,12 +88,12 @@ export async function listJobs(filters?: {
   query += ' ORDER BY created_at DESC';
 
   if (filters?.limit) {
-    query += ` LIMIT $${paramIndex}`;
+    query += ` LIMIT ${paramIndex}`;
     params.push(filters.limit);
     paramIndex++;
 
     if (filters?.offset) {
-      query += ` OFFSET $${paramIndex}`;
+      query += ` OFFSET ${paramIndex}`;
       params.push(filters.offset);
     }
   }
