@@ -4,11 +4,10 @@ FROM mcr.microsoft.com/playwright:v1.58.0-jammy
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (ensure both package.json and package-lock.json are copied)
+COPY package.json package-lock.json ./
 
 # Install dependencies (including TypeScript for build)
-# Using npm install instead of npm ci for Railway compatibility
 RUN npm install
 
 # Copy source code
