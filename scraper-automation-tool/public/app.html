@@ -424,7 +424,7 @@
                 </div>
 
                 <!-- Filters -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 bg-gray-50 rounded-lg mb-6">
                     <div>
                         <label class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-2">Date Range</label>
                         <select id="dateFilter" onchange="applyFilters()" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
@@ -432,6 +432,12 @@
                             <option value="today">Today</option>
                             <option value="week">This Week</option>
                             <option value="month">This Month</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-2">Job ID</label>
+                        <select id="jobIdFilter" onchange="applyFilters()" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            <option value="">All Jobs</option>
                         </select>
                     </div>
                     <div>

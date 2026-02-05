@@ -528,6 +528,24 @@ async function loadAllData() {
 
         console.log(`Total items loaded: ${allJobsData.length}`);
 
+        // Collect unique job IDs
+        const uniqueJobIds = new Set();
+        allJobsData.forEach(item => {
+            if (item._job_id) {
+                uniqueJobIds.add(item._job_id);
+            }
+        });
+
+        // Populate Job ID filter
+        const jobIdFilter = document.getElementById('jobIdFilter');
+        jobIdFilter.innerHTML = '<option value="">All Jobs</option>';
+        Array.from(uniqueJobIds).sort().forEach(jobId => {
+            const option = document.createElement('option');
+            option.value = jobId;
+            option.textContent = jobId.substring(0, 8) + '...'; // Show first 8 chars
+            jobIdFilter.appendChild(option);
+        });
+
         // Populate location filter
         const locationFilter = document.getElementById('locationFilter');
         locationFilter.innerHTML = '<option value="">All Locations</option>';
@@ -554,6 +572,7 @@ async function loadAllData() {
 // Apply filters
 function applyFilters() {
     const dateFilter = document.getElementById('dateFilter').value;
+    const jobIdFilter = document.getElementById('jobIdFilter').value;
     const locationFilter = document.getElementById('locationFilter').value;
     const categoryFilter = document.getElementById('categoryFilter').value;
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -573,6 +592,11 @@ function applyFilters() {
                 const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
                 if (jobDate < monthAgo) return false;
             }
+        }
+
+        // Job ID filter
+        if (jobIdFilter && item._job_id !== jobIdFilter) {
+            return false;
         }
 
         // Location filter
