@@ -8,7 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies (including TypeScript for build)
-RUN npm ci
+# Using npm install instead of npm ci for Railway compatibility
+RUN npm install
 
 # Copy source code
 COPY . .
