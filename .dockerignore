@@ -1,6 +1,22 @@
-# Ignore everything at root except scraper-automation-tool
-/*
-!/scraper-automation-tool
+# Don't ignore the scraper-automation-tool directory
+# Only ignore specific files/folders inside it
+
+# Git and version control
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+
+# Documentation at root
+/*.md
+
+# BMAD Universal (not needed for deployment)
+BMAD Universal
+
+# Kiro specs (not needed for deployment)
+.kiro
 
 # Inside scraper-automation-tool, ignore these
 scraper-automation-tool/node_modules
