@@ -1,0 +1,12 @@
+# Ignore everything at root except scraper-automation-tool
+/*
+!/scraper-automation-tool
+
+# Inside scraper-automation-tool, ignore these
+scraper-automation-tool/node_modules
+scraper-automation-tool/dist
+scraper-automation-tool/data
+scraper-automation-tool/.env
+scraper-automation-tool/.env.local
+scraper-automation-tool/*.md
+scraper-automation-tool/docs
