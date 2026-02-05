@@ -345,9 +345,6 @@ function setupEventListeners() {
         const maxPagesSelect = document.getElementById('maxPagesSelect').value;
         const maxPagesValue = maxPagesSelect === 'all' ? 999 : parseInt(document.getElementById('maxPages').value);
         
-        // Get webhook URL (optional)
-        const webhookUrl = document.getElementById('webhookUrl').value.trim();
-        
         const data = {
             site: 'theknot',
             parameters: {
@@ -356,13 +353,9 @@ function setupEventListeners() {
                 maxPages: maxPagesValue
             },
             format: document.getElementById('format').value,
-            headless: !document.getElementById('showBrowser').checked
+            headless: !document.getElementById('showBrowser').checked,
+            webhook_url: 'https://app.nimbusweb.me/automation/api/v1/webhooks/bfXpolSbHZkEElTyRSLHz'
         };
-        
-        // Add webhook_url if provided
-        if (webhookUrl) {
-            data.webhook_url = webhookUrl;
-        }
 
         try {
             const response = await fetch(`${API_BASE}/scrape`, {
